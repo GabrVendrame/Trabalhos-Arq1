@@ -1,71 +1,66 @@
 class Ula:
-    def __init__(self, r1, r2, r3, r4, r5, r6):
-        self.r1 = r1
-        self.r2 = r2
-        self.r3 = r3
-        self.r4 = r4
-        self.r5 = r5
-        self.r6 = r6
+    def __init__(self):
+        pass
     
-    def soma(self, op1, op2):
-        i, j = len(op1)-1, len(op2)-1
+    def soma(self, operando1, operando2):
+        i, j = len(operando1)-1, len(operando2)-1
         result = ""
         cin = 0
         # compara bit a bit ambos operadores até que o tamanho de um chegue a 0
         while i >= 0 and j >= 0:
-            ab = int(op1[i]) ^ int(op2[j])
+            ab = int(operando1[i]) ^ int(operando2[j])
             result += str(ab ^ cin)
-            cin = ab & cin | int(op1[i]) & int(op2[j])
+            cin = ab & cin | int(operando1[i]) & int(operando2[j])
             i -= 1
             j -= 1
         # termina a comparacao caso o segundo operador tenha tamanho 0 no primeiro "while"
         while i >= 0 :
-            result += str(int(op1[i]) ^ cin)
-            cin = int(op1[i]) & cin
+            result += str(int(operando1[i]) ^ cin)
+            cin = int(operando1[i]) & cin
             i -= 1
         # termina a comparacao caso o primeiro operador tenha tamanho 0 no primeiro "while"
         while j >= 0:
-            result += str(int(op2[j]) ^ cin)
-            cin = int(op2[j]) & cin
+            result += str(int(operando2[j]) ^ cin)
+            cin = int(operando2[j]) & cin
             j -= 1
         # trata bits excedentes
         if len(result) < 12 and cin == 1:
             result += str(cin)
         return result[::-1]
         
-    def subtracao(self, op1, op2):
-        i, j = len(op1)-1, len(op2)-1
+    def subtracao(self, operando1, operando2):
+        i, j = len(operando1)-1, len(operando2)-1
         result = ""
         bwin = 0
         # mesma ideia da funcao de soma para todos os laços
         while i >= 0 and j >= 0:
-            ab = int(op1[i]) ^ int(op2[j])
+            ab = int(operando1[i]) ^ int(operando2[j])
             result += str(ab ^ bwin)
-            bwin = ~int(op1[i]) & int(op2[j]) | (~ab & bwin)
+            bwin = ~int(operando1[i]) & int(operando2[j]) | (~ab & bwin)
             i -= 1
             j -= 1
         while i >= 0 :
-            result += str(int(op1[i]) ^ bwin)
-            bwin = ~int(op1[i]) & bwin
+            result += str(int(operando1[i]) ^ bwin)
+            bwin = ~int(operando1[i]) & bwin
             i -= 1
         while j >= 0:
-            result += str(int(op2[j]) ^ bwin)
-            bwin = ~int(op2[j]) & bwin
+            result += str(int(operando2[j]) ^ bwin)
+            bwin = ~int(operando2[j]) & bwin
             j -= 1
         return result[::-1]
 
-    def multiplicacao(self, op1, op2):
+    def multiplicacao(self, operando1, operando2):
         result = "0"
-        # soma o número n vezes // n = op2 base10
-        for i in range(int(op2, 2)):
-            result = self.soma(op1, result)
+        # soma o número n vezes // n = operando2 base10
+        for i in range(int(operando2, 2)):
+            result = self.soma(operando1, result)
         return result
 
-    def divisao(self, op1, op2):
+    def divisao(self, operando1, operando2):
         result = "0"
-        # subtrai o número n vezes // n = op2 base10
-        while int(op1, 2) >= int(op2, 2):
-            op1 = self.subtracao(op1, op2)
+        # subtrai o número n vezes // n = operando2 base10
+        while int(operando1, 2) >= int(operando2, 2):
+            operando1 = self.subtracao(operando1, operando2)
             result = self.soma(result, "1")
         return result
 
@@ -74,7 +69,7 @@ class Uctrl:
         pass
 
     def complementoDois(self, operando):
-        ula = Ula(0, 0, 0, 0, 0, 0)
+        ula = Ula()
         um = '1'
         if(operando[0] == '-'):
             operando = operando[1:]
@@ -100,27 +95,32 @@ class Uctrl:
     def selecOperacao(self, instrucao):
         ula = Ula()
         if instrucao[0] == "ADD" or instrucao[0] == "add":
-            op1 = self.complementoDois(instrucao[1])
-            op2 = self.complementoDois(instrucao[2])
-            resultado = ula.soma(op1, op2)
-            print(resultado)
+            operando1 = self.complementoDois(instrucao[1])
+            operando2 = self.complementoDois(instrucao[2])
+            resultado = ula.soma(operando1, operando2)
+            print("Soma: {}".format(resultado))
         elif instrucao[0] == "SUB" or instrucao[0] == "sub":
-            op1 = self.complementoDois(instrucao[1])
-            op2 = self.complementoDois(instrucao[2])
-            resultado = ula.subtracao(op1, op2)
-            print(resultado)
+            operando1 = self.complementoDois(instrucao[1])
+            operando2 = self.complementoDois(instrucao[2])
+            resultado = ula.subtracao(operando1, operando2)
+            print("Subtracao: {}".format(resultado))
         elif instrucao[0] == "MUL" or instrucao[0] == "mul":
-            resultado = ula.multiplicacao(op1, op2)
-            print(resultado)
+            operando1 = self.converteBin(instrucao[1])
+            operando2 = self.converteBin(instrucao[2])
+            resultado = ula.multiplicacao(operando1, operando2)
+            print("Multiplicacao: {}".format(resultado))
         elif instrucao[0] == "DIV" or instrucao[0] == "div":
-            resultado = ula.divisao(op1, op2)
-            print(resultado)
+            operando1 = self.converteBin(instrucao[1])
+            operando2 = self.converteBin(instrucao[2])
+            resultado = ula.divisao(operando1, operando2)
+            print("Divisao: {}".format(resultado))
 
 def main():
     uc = Uctrl()
-    instrucao = input()
-    instrucao = instrucao.split(" ")
-    uc.selecOperacao(instrucao)
+    with open("entrada.txt") as file:
+        for line in file:
+            instrucao = line.strip("\n").split(" ")
+            uc.selecOperacao(instrucao)
 
 if __name__ == "__main__":
     main()
