@@ -1,5 +1,5 @@
 ADD 12 37
-add 1 54
+add 5 54
 SUB 75 23
 DIV 100 2
 MUL 86 6
